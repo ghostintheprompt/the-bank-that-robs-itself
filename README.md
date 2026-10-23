@@ -1,4 +1,4 @@
-# maker_breaker
+# The Bank That Robs Itself
 
 A runnable lab showing how a patient, composed prompt-injection attack moves
 money through an agentic banking pipeline while **every individual action stays
