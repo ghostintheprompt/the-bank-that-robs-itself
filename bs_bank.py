@@ -75,7 +75,7 @@ class ScheduledPayment:
 
 
 class CoreBanking:
-    DUAL_CONTROL_LIMIT = 500_000.0   # transfers at or above this need two approvers
+    DUAL_CONTROL_LIMIT = 50_000.0   # transfers at or above this need two approvers
 
     def __init__(self):
         self.accounts = {
@@ -93,7 +93,7 @@ class CoreBanking:
                 source_account="VANE-PRIVATE",
                 payee_label="Vane Management LLC",
                 routing_ref="ref-vanemgmt",
-                amount=480_250.0,       # deliberately just under the dual-control limit
+                amount=48_250.0,       # deliberately just under the dual-control limit
             )
         }
 
