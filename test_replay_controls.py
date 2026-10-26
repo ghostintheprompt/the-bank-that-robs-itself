@@ -49,4 +49,10 @@ class Controls(unittest.TestCase):
         for value in [0,-1,1.5,True]:
             r=Replay();r.payments['PAY-10471']=replace(r.payments['PAY-10471'],cents=value)
             with self.assertRaises(ValueError):r.approve(MEMO)
+    def test_stale_original_destination(self):
+        r=Replay();a=r.approve(MEMO);r.payments['PAY-10471']=replace(r.payments['PAY-10471'],destination='OTHER')
+        with self.assertRaises(ValueError):r.settle(a)
+    def test_stale_version(self):
+        r=Replay();a=r.approve(MEMO);r.payments['PAY-10471']=replace(r.payments['PAY-10471'],version=2)
+        with self.assertRaises(ValueError):r.settle(a)
 if __name__=='__main__':unittest.main()

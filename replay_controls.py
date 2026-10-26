@@ -20,6 +20,7 @@ class Approval:
     payee: str
     cents: int
     destination: str
+    old_destination: str
     route_ref: str
     maker: str
     checker: str
@@ -70,7 +71,7 @@ class Replay:
         if hardened and destination not in self.verified_payees.get(p.payee, set()):
             self.events.append({'stage': 'approval', 'result': 'blocked', 'reason': 'destination not independently bound to payee'})
             raise ValueError('Unverified payee destination')
-        approval = Approval(str(uuid.uuid4()), p.id, p.version, p.source, p.payee, p.cents, destination, route_ref, maker, checker)
+        approval = Approval(str(uuid.uuid4()), p.id, p.version, p.source, p.payee, p.cents, destination, p.destination, route_ref, maker, checker)
         self.issued_approvals.add(approval)
         self.events.append({'stage': 'approval', 'result': 'approved', 'destination': destination})
         return approval
@@ -82,8 +83,8 @@ class Replay:
         if hardened:
             if approval not in self.issued_approvals:
                 raise ValueError('Approval not issued by this workflow')
-            expected = (p.id, p.version, p.source, p.payee, p.cents)
-            approved = (approval.payment_id, approval.payment_version, approval.source, approval.payee, approval.cents)
+            expected = (p.id, p.version, p.source, p.payee, p.cents, p.destination)
+            approved = (approval.payment_id, approval.payment_version, approval.source, approval.payee, approval.cents, approval.old_destination)
             if expected != approved or self.routes.get(approval.route_ref) != approval.destination:
                 raise ValueError('Approval became stale')
             if approval.destination not in self.verified_payees.get(p.payee, set()):
