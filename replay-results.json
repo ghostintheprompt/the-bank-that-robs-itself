@@ -1,0 +1,60 @@
+{
+  "scope": "Synthetic deterministic control replay. No model, bank, network, or cryptographic approval authority.",
+  "baseline_redirect": {
+    "result": "settled",
+    "accounts_cents": {
+      "VANE-PRIVATE": 415175000,
+      "VANE-MGMT": 0,
+      "MULE-9981": 4825000
+    },
+    "events": [
+      {
+        "stage": "approval",
+        "result": "approved",
+        "destination": "MULE-9981"
+      },
+      {
+        "stage": "settlement",
+        "result": "settled",
+        "destination": "MULE-9981",
+        "cents": 4825000
+      }
+    ]
+  },
+  "hardened_redirect": {
+    "result": "Unverified payee destination",
+    "accounts_cents": {
+      "VANE-PRIVATE": 420000000,
+      "VANE-MGMT": 0,
+      "MULE-9981": 0
+    },
+    "events": [
+      {
+        "stage": "approval",
+        "result": "blocked",
+        "reason": "destination not independently bound to payee"
+      }
+    ]
+  },
+  "hardened_legitimate": {
+    "result": "settled",
+    "accounts_cents": {
+      "VANE-PRIVATE": 415175000,
+      "VANE-MGMT": 4825000,
+      "MULE-9981": 0
+    },
+    "events": [
+      {
+        "stage": "approval",
+        "result": "approved",
+        "destination": "VANE-MGMT"
+      },
+      {
+        "stage": "settlement",
+        "result": "settled",
+        "destination": "VANE-MGMT",
+        "cents": 4825000
+      }
+    ]
+  }
+}

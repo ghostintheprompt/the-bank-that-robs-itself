@@ -8,16 +8,12 @@ The bank is **Bull Street Bank** (B.S. for short), a fictional institution
 modeled on the controls of a large, regulated US bank. The target is the private
 account of **Marlo Vane**, a fictional movie star. No real institution or person
 is involved, no network is touched, and there is no live model to jailbreak. The
-lab is a deterministic simulation that isolates one thing: a structural gap that
-a stricter single-action rule cannot close.
+lab is a deterministic simulation that isolates one thing: a deliberately incomplete routing-control fixture. The added control replay demonstrates destination-bound prevention as well as the original detector.
 
 ## Why this exists
 
 Industry survey work (OvationCXM, *When AI Agents Become the Customer*, 2026)
-reports that a large majority of finance leaders intend to let AI agents act
-inside real money workflows, payments, reconciliation, treasury, within two
-years, and expect their bank to provide the governed control layer that makes it
-safe. That control layer is sold as a feature. A red teamer reads it as a new,
+reports that 72% of 522 surveyed US finance professionals would allow agentic banking if secure and compliant, and 47% of nonusers plan adoption within 24 months. These are vendor-sponsored survey responses, not measured deployment. That control layer is sold as a feature. A red teamer reads it as a new,
 high-value attack surface. This lab is what the survey does not do: show what an
 adversary does to an agentic banking workflow, and what actually catches it.
 
@@ -92,3 +88,18 @@ Educational and defensive. Bull Street Bank and Marlo Vane are fictional, and th
 lab runs entirely in memory on your own machine. It exists to make an
 agentic-banking failure mode legible and to show the detection that closes it,
 not to operate against any real system.
+
+## October 25: a preventive control replay
+
+The original run_demo.py is retained as the historical fixture. Its summarizer parses fields and supplies defaults even for an empty memo; apply_correction hardcodes the mule account; its detector runs after settlement and prints alerts without holding balances. The authorized flags describe the fixture's own decisions, not legal permission or a real bank's controls. The status host is a string, not a DNS request. The memo requests a correction; no-instruction means no overt model override, not absence of a business request. No real model or regulatory compliance test is established.
+
+The added replay_controls.py removes those two shortcuts. Missing/duplicate fields fail closed. A separately seeded routing directory resolves the proposal; the memo cannot populate it. An independent payee binding distinguishes a legitimate alias from a different account. The vulnerable baseline still lacks the destination binding. The hardened path requires distinct authorized maker/checker identities, a positive integer-cent amount below the fixture threshold, and a workflow-issued approval bound to payment version, amount, source, payee, routing reference and resolved destination. Settlement revalidates those fields and authority, and prevents replay.
+
+```sh
+python3 -m unittest test_replay_controls -v
+python3 replay_controls.py
+```
+
+Fifteen tests pass. Saved replay-results.json records baseline redirect, hardened rejection with unchanged balances, and successful legitimate alias settlement. Synthetic amount: 4,825,000 cents ($48,250). Tests cover stale amount/route, revoked payee binding/role, fabricated/cross-workflow ticket, duplicate settlement, missing/duplicate/unknown fields, role separation, invalid amounts and the $50,000 boundary.
+
+This is an in-memory business-logic control, not signed distributed approval, authenticated human identity, external verification, a bank integration, or an LLM prompt-injection benchmark. Fixture roles and payee records are trusted inputs. A production service needs authenticated principals, protected master data, atomic persistence/transactions and independently verified beneficiary onboarding. Legitimate account changes require that separate verified update; the memo cannot authorize itself. The original detector's comments claiming no preventive rule can help are superseded by this demonstrated preventive replay.
